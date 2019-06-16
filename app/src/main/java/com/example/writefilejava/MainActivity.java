@@ -33,26 +33,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void writeFile() {
+        long begin = System.nanoTime();
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
 
         File sdCard = Environment.getExternalStorageDirectory();// storage/emulated/0
-        File file = new File(sdCard, "/Download/writeJava.txt");
+        File file = new File(sdCard, "/Download/fileJava.txt");
+
+        StringBuffer sb = new StringBuffer();
+        for(int i = 1; i <= 10000; i++) {
+            sb.append("Line " + i + "\n");
+        }
 
         try {
             file.createNewFile();
 
             FileOutputStream fOut = new FileOutputStream(file);
             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-            myOutWriter.append("Testando");
+            myOutWriter.append(sb);
 
             myOutWriter.close();
 
             fOut.flush();
             fOut.close();
 
+            long difference = (System.nanoTime() - begin)/1000000;
+
             TextView statusTxt = findViewById(R.id.statusTxt);
-            statusTxt.setText("Done writing");
+            statusTxt.setText("Done writing in " + difference + "ms");
         }
         catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
